@@ -1,30 +1,40 @@
-﻿using Google.Cloud.Diagnostics.AspNetCore;
+#if (Framework2)
+using Google.Cloud.Diagnostics.AspNetCore;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+#endif
+
+using Microsoft.AspNetCore.Hosting;
 using System.IO;
 
-namespace _safe_project_name_
+namespace MyGcpMvcProject
 {
     public class Program
     {
+        #if (Framework2)
         public static IHostingEnvironment HostingEnvironment { get; private set; }
         public static IConfiguration Configuration { get; private set; }
 
         public static string GcpProjectId { get; private set; }
         public static bool HasGcpProjectId => !string.IsNullOrEmpty(GcpProjectId);
 
-        public static void Main(string[] args)
-        {
-            var host = new WebHostBuilder()
+        #endif
+        public static void Main(string[] args) =>
+            BuildWebHost(args).Run();
+
+        public static void BuildWebHost(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
+                #if (Framework1)
+                .UseStartup<Startup>()
+                #elseif (Framework2)
                 .ConfigureAppConfiguration((context, configBuilder) =>
                 {
                     HostingEnvironment = context.HostingEnvironment;
@@ -118,10 +128,10 @@ namespace _safe_project_name_
                             template: "{controller=Home}/{action=Index}/{id?}");
                     });
                 })
+                #endif
                 .Build();
 
-            host.Run();
-        }
+        #if (Framework2)
 
         /// <summary>
         /// Get the Google Cloud Platform Project ID from the platform it is running on,
@@ -189,5 +199,6 @@ namespace _safe_project_name_
             }
             return versionId;
         }
+        #endif
     }
 }
