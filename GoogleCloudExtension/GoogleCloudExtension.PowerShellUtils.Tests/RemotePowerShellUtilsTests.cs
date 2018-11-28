@@ -88,7 +88,7 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
         }
 
         [TestMethod]
-        public async Task TestInvokeAsync_DoesNotStartPowershellWhenTokenAlreadyCanceled()
+        public async Task TestInvokeAsync_DoesNotStartPowerShellWhenTokenAlreadyCanceled()
         {
             using (PowerShell powerShell = PowerShell.Create())
             {
@@ -118,7 +118,7 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
 
         [TestMethod]
         [Timeout(5000)]
-        public async Task TestInvokeAsync_StopsPowershellWhenTokenCanceled()
+        public async Task TestInvokeAsync_StopsPowerShellWhenTokenCanceled()
         {
             using (PowerShell powerShell = PowerShell.Create())
             {

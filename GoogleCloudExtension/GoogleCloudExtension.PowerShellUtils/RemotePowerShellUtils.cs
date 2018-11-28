@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtension.PowerShellUtils
 {
     /// <summary>
-    /// Utilities for remote powershell operations.
+    /// Utilities for remote PowerShell operations.
     /// </summary>
     public static class RemotePowerShellUtils
     {
@@ -31,10 +31,10 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// Gets the embedded resource text file.
         /// </summary>
         /// <param name="resourceName">
-        /// Script file is embeded as resource. To extract the file, use resource name.
-        /// i.e GoogleCloudExtension.RemotePowershell.Resources.EmbededScript.ps1
+        /// Script file is embedded as resource. To extract the file, use resource name.
+        /// i.e GoogleCloudExtension.RemotePowerShell.Resources.EmbeddedScript.ps1
         /// </param>
-        /// <returns>The text content of the embeded resource file</returns>
+        /// <returns>The text content of the embedded resource file</returns>
         /// <exception cref="FileNotFoundException">The file of <paramref name="resourceName"/> is not found.</exception>
         public static string GetEmbeddedFile(string resourceName)
         {
@@ -90,12 +90,12 @@ namespace GoogleCloudExtension.PowerShellUtils
         }
 
         /// <summary>
-        /// Asyncronously executes the PowerShell commands.
+        /// Asynchronously executes the PowerShell commands.
         /// </summary>
         /// <param name="powerShell">The <seealso cref="PowerShell"/> object.</param>
-        /// <param name="cancelToken">When cancelation is requested, this method stops the execution and throws.</param>
+        /// <param name="cancelToken">When cancellation is requested, this method stops the execution and throws.</param>
         /// <returns>
-        /// The <see cref="PSDataCollection{T}"/> returned by the powershell execution.
+        /// The <see cref="PSDataCollection{T}"/> returned by the PowerShell execution.
         /// </returns>
         public static async Task<PSDataCollection<PSObject>> InvokeAsync(
             this PowerShell powerShell,
@@ -103,13 +103,7 @@ namespace GoogleCloudExtension.PowerShellUtils
         {
             cancelToken.ThrowIfCancellationRequested();
 
-            powerShell.InvocationStateChanged += (sender, args) =>
-            {
-                if (args.InvocationStateInfo.State == PSInvocationState.Running)
-                {
-                    cancelToken.Register(() => powerShell.BeginStop(null, null));
-                }
-            };
+            powerShell.InvocationStateChanged += RegisterCancellation;
 
             try
             {
@@ -118,6 +112,15 @@ namespace GoogleCloudExtension.PowerShellUtils
             finally
             {
                 cancelToken.ThrowIfCancellationRequested();
+            }
+
+            void RegisterCancellation(object sender, PSInvocationStateChangedEventArgs args)
+            {
+                if (args.InvocationStateInfo.State == PSInvocationState.Running)
+                {
+                    powerShell.InvocationStateChanged -= RegisterCancellation;
+                    cancelToken.Register(() => powerShell.BeginStop(null, null));
+                }
             }
         }
     }
