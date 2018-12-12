@@ -87,6 +87,8 @@ namespace GoogleCloudExtension.Deployment
                 case KnownProjectTypes.WebApplication:
                     target = new MSBuildTarget("WebPublish");
                     break;
+                case KnownProjectTypes.NetCoreWebApplication:
+                case KnownProjectTypes.None:
                 default:
                     target = new MSBuildTarget("Publish");
                     break;
@@ -102,7 +104,8 @@ namespace GoogleCloudExtension.Deployment
                 new MSBuildProperty("DeployIisAppPath", targetDeployPath),
                 new MSBuildProperty("UserName", credentials.User),
                 new MSBuildProperty("Password", credentials.Password),
-                new MSBuildProperty("AllowUntrustedCertificate", "True")
+                new MSBuildProperty("AllowUntrustedCertificate", "True"),
+                new MSBuildProperty("GoogleComputeEngineBuild", "True")
             };
             string publishMessage = string.Format(Resources.GcePublishProgressMessage, targetInstance.Name);
             using (await StatusbarHelper.FreezeTextAsync(publishMessage))

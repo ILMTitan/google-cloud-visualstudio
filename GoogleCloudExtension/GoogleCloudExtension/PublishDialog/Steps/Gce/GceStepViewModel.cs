@@ -44,7 +44,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         public const string LaunchRemoteDebuggerProjectPropertyName = "GoogleComputeEnginePublishLaunchRemoteDebugger";
         public const string DefaultSiteName = "Default Web Site";
 
-        // The list of APIs that are required for a succesful deployment to GCE.
+        // The list of APIs that are required for a successful deployment to GCE.
         private static readonly IList<string> s_requiredApis = new List<string>
         {
             // Need the GCE API to perform all work.
@@ -74,7 +74,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         protected override IList<string> RequiredApis => s_requiredApis;
 
         /// <summary>
-        /// The asynchrnous value that will resolve to the list of instances in the current GCP Project, and that are
+        /// The asynchronous value that will resolve to the list of instances in the current GCP Project, and that are
         /// the available target for the publish process.
         /// </summary>
         public IEnumerable<Instance> Instances
@@ -149,7 +149,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         public ProtectedCommand RefreshInstancesCommand { get; }
 
         /// <summary>
-        /// Whether to open the website after a succesful publish operation. Defaults to true.
+        /// Whether to open the website after a successful publish operation. Defaults to true.
         /// </summary>
         public bool OpenWebsite
         {
@@ -158,7 +158,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         }
 
         /// <summary>
-        /// Whether to attach debugger after publising.
+        /// Whether to attach debugger after publishing.
         /// </summary>
         public bool LaunchRemoteDebugger
         {
